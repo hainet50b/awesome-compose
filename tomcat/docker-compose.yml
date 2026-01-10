@@ -13,7 +13,7 @@ services:
 
         if [ ! -e /tmp/conf/server.xml ]; then
           mkdir -p /tmp/conf;
-          cp -a /usr/local/tomcat/conf /tmp/conf;
+          cp -a /usr/local/tomcat/conf/. /tmp/conf;
         fi
       '
     restart: no
