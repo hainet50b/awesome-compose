@@ -13,7 +13,7 @@ services:
   pmacho-mysql-client:
     image: mysql:9
     entrypoint: ["sh", "-c"]
-    command: ["mysql -h pmacho-mysql -u root -p pmacho_db"]
+    command: ["mysql -h pmacho-mysql -u pmacho_user -p pmacho_db"]
 
 volumes:
   pmacho-mysql-volume:
