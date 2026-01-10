@@ -1,0 +1,29 @@
+services:
+  pmacho-tomcat-init:
+    image: tomcat:11
+    volumes:
+      - ./webapps:/tmp/webapps
+      - ./conf:/tmp/conf
+    command: >
+      sh -c '
+        if [ ! -e /tmp/webapps/ROOT ]; then
+          mkdir -p /tmp/webapps;
+          cp -a /usr/local/tomcat/webapps.dist/ROOT /tmp/webapps;
+        fi
+
+        if [ ! -e /tmp/conf/server.xml ]; then
+          mkdir -p /tmp/conf;
+          cp -a /usr/local/tomcat/conf /tmp/conf;
+        fi
+      '
+    restart: no
+
+  pmacho-tomcat:
+    image: tomcat:11
+    ports:
+      - 8080:8080
+    volumes:
+      - ./webapps:/usr/local/tomcat/webapps
+      - ./conf:/usr/local/tomcat/conf
+    restart: unless-stopped
+
