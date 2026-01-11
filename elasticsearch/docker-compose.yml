@@ -1,0 +1,22 @@
+services:
+  pmacho-elasticsearch:
+    image: elasticsearch:9.2.3
+    ports:
+      - 9200:9200
+    volumes:
+      - pmacho-elasticsearch-volume:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+
+  pmacho-kibana:
+    image: kibana:9.2.3
+    ports:
+      - 5601:5601
+    restart: unless-stopped
+    depends_on:
+      pmacho-elasticsearch:
+        condition: service_started
+
+volumes:
+  pmacho-elasticsearch-volume:
