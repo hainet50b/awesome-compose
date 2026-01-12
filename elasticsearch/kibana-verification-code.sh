@@ -1,3 +1,13 @@
 #!/usr/bin/env bash
-docker compose exec pmacho-kibana /usr/share/kibana/bin/kibana-verification-code
+set -eu
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+docker_compose_file='docker-compose.yml'
+service='pmacho-kibana'
+
+docker compose \
+  --project-directory "$script_dir" \
+  -f "${script_dir}/${docker_compose_file}" \
+  exec "$service" \
+  /usr/share/kibana/bin/kibana-verification-code
 
