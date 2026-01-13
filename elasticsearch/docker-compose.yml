@@ -1,23 +1,83 @@
 services:
+  pmacho-elasticsearch-certs-init:
+    image: elasticsearch:9.2.3
+    user: "0"
+    command: ["/bin/sh", "/usr/local/bin/pmacho-elasticsearch-certs-init.sh"]
+    volumes:
+      - pmacho-elasticsearch-volume-certs:/tmp/certs
+      - ./scripts/pmacho-elasticsearch-certs-init.sh:/usr/local/bin/pmacho-elasticsearch-certs-init.sh:ro
+      - ./config/instances.yml:/usr/local/share/pmacho-elasticsearch/config/instances.yml:ro
+    restart: no
+
   pmacho-elasticsearch:
     image: elasticsearch:9.2.3
+    depends_on:
+      pmacho-elasticsearch-certs-init:
+        condition: service_completed_successfully
     ports:
       - 9200:9200
     volumes:
-      - pmacho-elasticsearch-volume:/usr/share/elasticsearch/data
-    restart: unless-stopped
+      - pmacho-elasticsearch-volume-data:/usr/share/elasticsearch/data
+      - pmacho-elasticsearch-volume-certs:/usr/share/elasticsearch/config/certs:ro
     environment:
-      - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - discovery.type=single-node
+      # Security settings
+      - xpack.security.autoconfiguration.enabled=false
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-changeme}
+      - KIBANA_SYSTEM_PASSWORD=${KIBANA_SYSTEM_PASSWORD:-changeme}
+      # HTTP TLS settings
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.certificate_authorities=/usr/share/elasticsearch/config/certs/ca/ca.crt
+      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certs/pmacho-elasticsearch/pmacho-elasticsearch.crt
+      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certs/pmacho-elasticsearch/pmacho-elasticsearch.key
+      # Transport TLS settings
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/certs/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certs/pmacho-elasticsearch/pmacho-elasticsearch.crt
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certs/pmacho-elasticsearch/pmacho-elasticsearch.key
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt https://localhost:9200 > /dev/null || exit 1"]
+      interval: 5s
+      timeout: 2s
+      retries: 60
+
+  pmacho-kibana-user-init:
+    image: curlimages/curl:latest
+    depends_on:
+      pmacho-elasticsearch:
+        condition: service_healthy
+    command: ["/bin/sh", "/usr/local/bin/pmacho-kibana-user-init.sh"]
+    volumes:
+      - pmacho-elasticsearch-volume-certs:/usr/local/share/pmacho-elasticsearch/certs:ro
+      - ./scripts/pmacho-kibana-user-init.sh:/usr/local/bin/pmacho-kibana-user-init.sh:ro
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-changeme}
+      - KIBANA_SYSTEM_PASSWORD=${KIBANA_SYSTEM_PASSWORD:-changeme}
+    restart: no
 
   pmacho-kibana:
     image: kibana:9.2.3
-    ports:
-      - 5601:5601
-    restart: unless-stopped
     depends_on:
       pmacho-elasticsearch:
-        condition: service_started
+        condition: service_healthy
+      pmacho-kibana-user-init:
+        condition: service_completed_successfully
+    ports:
+      - 5601:5601
+    volumes:
+      - pmacho-elasticsearch-volume-certs:/usr/share/kibana/config/certs:ro
+    environment:
+      - ELASTICSEARCH_HOSTS=https://pmacho-elasticsearch:9200
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/kibana/config/certs/ca/ca.crt
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_SYSTEM_PASSWORD:-changeme}
+    restart: unless-stopped
 
 volumes:
-  pmacho-elasticsearch-volume:
+  pmacho-elasticsearch-volume-data:
+  pmacho-elasticsearch-volume-certs:
+

@@ -1,0 +1,14 @@
+instances:
+  - name: pmacho-elasticsearch
+    dns:
+      - pmacho-elasticsearch
+      - localhost
+    ip:
+      - 127.0.0.1
+  - name: pmacho-kibana
+    dns:
+      - pmacho-kibana
+      - localhost
+    ip:
+      - 127.0.0.1
+
