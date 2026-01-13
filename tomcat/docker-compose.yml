@@ -1,9 +1,6 @@
 services:
   pmacho-tomcat-init:
     image: tomcat:11
-    volumes:
-      - ./webapps:/tmp/webapps
-      - ./conf:/tmp/conf
     command: >
       sh -c '
         if [ ! -e /tmp/webapps/ROOT ]; then
@@ -16,10 +13,16 @@ services:
           cp -a /usr/local/tomcat/conf/. /tmp/conf;
         fi
       '
+    volumes:
+      - ./webapps:/tmp/webapps
+      - ./conf:/tmp/conf
     restart: no
 
   pmacho-tomcat:
     image: tomcat:11
+    depends_on:
+      pmacho-tomcat-init:
+        condition: service_completed_successfully
     ports:
       - 8080:8080
     volumes:

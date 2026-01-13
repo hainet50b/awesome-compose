@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-set -e
+set -eu
 
-docker compose run --rm pmacho-tomcat-init
-docker compose up -d pmacho-tomcat
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+docker_compose_file='docker-compose.yml'
+
+docker compose \
+  --project-directory "$script_dir" \
+  -f "${script_dir}/${docker_compose_file}" \
+  up -d
 
