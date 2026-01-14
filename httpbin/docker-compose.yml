@@ -1,0 +1,7 @@
+services:
+  pmacho-httpbin:
+    image: kennethreitz/httpbin
+    ports:
+      - 80:80
+    restart: unless-stopped
+
