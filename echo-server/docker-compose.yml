@@ -1,0 +1,6 @@
+services:
+  pmacho-echo-server:
+    image: ealen/echo-server:latest
+    ports:
+      - 3000:80
+
