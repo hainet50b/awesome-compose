@@ -3,4 +3,16 @@ services:
     image: ealen/echo-server:latest
     ports:
       - 3000:80
+    environment:
+      LOGS__SEQ__ENABLED: true
+      LOGS__SEQ__SERVER: http://pmacho-seq:5341
+    restart: unless-stopped
+  pmacho-seq:
+    image: datalust/seq:latest
+    ports:
+      - 3010:80
+    environment:
+      ACCEPT_EULA: Y
+      SEQ_FIRSTRUN_NOAUTHENTICATION: true
+    restart: unless-stopped
 
