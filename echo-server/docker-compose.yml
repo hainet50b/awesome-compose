@@ -11,8 +11,13 @@ services:
     image: datalust/seq:latest
     ports:
       - 3010:80
+    volumes:
+      - pmacho-seq-volume:/data
     environment:
       ACCEPT_EULA: Y
       SEQ_FIRSTRUN_NOAUTHENTICATION: true
     restart: unless-stopped
+
+volumes:
+  pmacho-seq-volume:
 
