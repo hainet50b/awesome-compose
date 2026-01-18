@@ -1,23 +1,31 @@
 services:
   pmacho-echo-server:
     image: ealen/echo-server:latest
+    depends_on:
+      pmacho-echo-server-seq:
+        condition: service_healthy
     ports:
       - 3000:80
     environment:
       LOGS__SEQ__ENABLED: true
-      LOGS__SEQ__SERVER: http://pmacho-seq:5341
+      LOGS__SEQ__SERVER: http://pmacho-echo-server-seq:5341
     restart: unless-stopped
-  pmacho-seq:
+  pmacho-echo-server-seq:
     image: datalust/seq:latest
     ports:
       - 3010:80
     volumes:
-      - pmacho-seq-volume:/data
+      - pmacho-echo-server-seq-volume:/data
     environment:
       ACCEPT_EULA: Y
       SEQ_FIRSTRUN_NOAUTHENTICATION: true
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:80 > /dev/null || exit 1"]
+      interval: 5s
+      timeout: 2s
+      retries: 60
 
 volumes:
-  pmacho-seq-volume:
+  pmacho-echo-server-seq-volume:
 
