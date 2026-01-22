@@ -1,7 +1,12 @@
 {
   "request": {
     "method": "DELETE",
-    "urlPathTemplate": "/users/{id}"
+    "urlPathTemplate": "/users/{id}",
+    "pathParameters": {
+      "id": {
+        "matches": "\\d+"
+      }
+    }
   },
   "response": {
     "status": 204

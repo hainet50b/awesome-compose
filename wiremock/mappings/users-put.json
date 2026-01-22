@@ -1,17 +1,19 @@
 {
   "request": {
     "method": "PUT",
-    "urlPathTemplate": "/users/{id}"
+    "urlPathTemplate": "/users/{id}",
+    "pathParameters": {
+      "id": {
+        "matches": "\\d+"
+      }
+    }
   },
   "response": {
     "status": 201,
     "headers": {
       "Content-Type": "application/json"
     },
-    "jsonBody": {
-      "id": "{{request.path.id}}",
-      "name": "programacho.me"
-    },
+    "bodyFileName": "users-put-response.json",
     "transformers": [
       "response-template"
     ]
