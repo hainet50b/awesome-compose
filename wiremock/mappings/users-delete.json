@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "DELETE",
+    "urlPathTemplate": "/users/{id}"
+  },
+  "response": {
+    "status": 204
+  }
+}
