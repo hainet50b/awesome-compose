@@ -1,4 +1,0 @@
-{
-  "id": {{request.path.id}},
-  "name": "programacho.me"
-}

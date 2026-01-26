@@ -1,22 +1,13 @@
 {
   "request": {
     "method": "GET",
-    "url": "/users"
+    "urlPath": "/users"
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/json"
     },
-    "jsonBody": [
-      {
-        "id": 1,
-        "name": "hainet50b"
-      },
-      {
-        "id": 2,
-        "name": "programacho.com"
-      }
-    ]
+    "bodyFileName": "users-get-response.json"
   }
 }
