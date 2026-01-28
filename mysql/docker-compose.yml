@@ -4,14 +4,14 @@ services:
     volumes:
       - pmacho-mysql-volume:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: changeme
-      MYSQL_DATABASE: pmacho_db
-      MYSQL_USER: pmacho_user
-      MYSQL_PASSWORD: pmacho_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-pmacho_db}
+      MYSQL_USER: ${MYSQL_USER:-pmacho_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-pmacho_password}
     healthcheck:
       test: [
         "CMD-SHELL",
-        "mysql -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD -e 'SELECT 1' > /dev/null || exit 1"
+        "mysql -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE -e 'SELECT 1' > /dev/null || exit 1"
       ]
       interval: 1s
       timeout: 2s
@@ -24,7 +24,11 @@ services:
       pmacho-mysql:
         condition: service_healthy
     entrypoint: ["sh", "-c"]
-    command: ["mysql -h pmacho-mysql -u pmacho_user -p pmacho_db"]
+    command: ["mysql -h pmacho-mysql -u$$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE"]
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-pmacho_db}
+      MYSQL_USER: ${MYSQL_USER:-pmacho_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-pmacho_password}
     restart: no
 
 volumes:

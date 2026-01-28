@@ -8,5 +8,11 @@ service='pmacho-mysql'
 docker compose \
   --project-directory "$script_dir" \
   -f "${script_dir}/${docker_compose_file}" \
-  exec "$service" mysql -h localhost -u pmacho_user -p pmacho_db
+  exec "$service" sh -c '
+    mysql \
+      -h localhost \
+      -u${MYSQL_USER:-pmacho_user} \
+      -p${MYSQL_PASSWORD:-pmacho_password} \
+      ${MYSQL_DATABASE:-pmacho_db}
+  '
 
