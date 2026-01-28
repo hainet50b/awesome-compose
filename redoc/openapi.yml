@@ -1,0 +1,48 @@
+openapi: 3.1.2
+
+info:
+  title: User API
+  license:
+    name: MIT License
+    url: https://opensource.org/license/mit
+  version: 1.0.0
+
+servers:
+  - url: https://localhost:8080
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      operationId: getAllUsers
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: hainet50b
+      required:
+        - id
+        - name
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+
+security: []
+

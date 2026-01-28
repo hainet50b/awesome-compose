@@ -1,0 +1,25 @@
+services:
+  pmacho-redoc:
+    image: redocly/redoc:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./openapi.yml:/usr/share/nginx/html/openapi.yml
+    environment:
+      SPEC_URL: /openapi.yml
+    restart: unless-stopped
+
+  pmacho-redoc-cli-lint:
+    image: redocly/cli:latest
+    command: lint openapi.yml
+    volumes:
+      - ./:/spec
+    restart: no
+
+  pmacho-redoc-cli-build-docs:
+    image: redocly/cli:latest
+    command: build-docs openapi.yml
+    volumes:
+      - ./:/spec
+    restart: no
+
