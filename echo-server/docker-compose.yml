@@ -10,6 +10,7 @@ services:
       LOGS__SEQ__ENABLED: true
       LOGS__SEQ__SERVER: http://pmacho-echo-server-seq:5341
     restart: unless-stopped
+
   pmacho-echo-server-seq:
     image: datalust/seq:latest
     ports:
