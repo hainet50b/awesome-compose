@@ -2,6 +2,7 @@ openapi: 3.1.2
 
 info:
   title: User API
+  description: This API provides access to user resources.
   license:
     name: MIT License
     url: https://opensource.org/license/mit
@@ -13,21 +14,29 @@ servers:
 paths:
   /users:
     get:
-      summary: Get all users
-      operationId: getAllUsers
       tags:
         - Users
+      summary: Get all users
+      operationId: getAllUsers
       responses:
-        '200':
+        "200":
           description: Success.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Users'
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              example:
+                - id: 1
+                  name: hainet50b
+                - id: 2
+                  name: programacho.com
 
 components:
   schemas:
     User:
+      description: A user in this system
       type: object
       properties:
         id:
@@ -39,10 +48,8 @@ components:
       required:
         - id
         - name
-    Users:
-      type: array
-      items:
-        $ref: '#/components/schemas/User'
 
 security: []
 
+tags:
+  - name: Users
