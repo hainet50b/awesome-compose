@@ -1,0 +1,16 @@
+services:
+  pmacho-vacuum-lint:
+    image: dshanley/vacuum:latest
+    working_dir: /work
+    command: lint openapi.yml
+    volumes:
+      - ./openapi.yml:/work/openapi.yml:ro
+    restart: no
+
+  pmacho-vacuum-dashboard:
+    image: dshanley/vacuum:latest
+    working_dir: /work
+    command: dashboard openapi.yml
+    volumes:
+      - ./openapi.yml:/work/openapi.yml:ro
+    restart: no

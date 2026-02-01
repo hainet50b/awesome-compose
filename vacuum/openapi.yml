@@ -1,0 +1,55 @@
+openapi: 3.1.2
+
+info:
+  title: User API
+  description: This API provides access to user resources.
+  license:
+    name: MIT License
+    url: https://opensource.org/license/mit
+  version: 1.0.0
+
+servers:
+  - url: https://localhost:8080
+
+paths:
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      operationId: getAllUsers
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              example:
+                - id: 1
+                  name: hainet50b
+                - id: 2
+                  name: programacho.com
+
+components:
+  schemas:
+    User:
+      description: A user in this system
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: hainet50b
+      required:
+        - id
+        - name
+
+security: []
+
+tags:
+  - name: Users
