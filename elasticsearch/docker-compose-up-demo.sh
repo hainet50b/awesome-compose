@@ -8,5 +8,5 @@ docker compose \
   --project-directory "$script_dir" \
   -f "${script_dir}/${docker_compose_file}" \
   --profile demo \
-  down
+  up -d
 

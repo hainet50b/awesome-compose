@@ -40,8 +40,12 @@ services:
       - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certs/pmacho-elasticsearch/pmacho-elasticsearch.key
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -s --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt https://localhost:9200 > /dev/null || exit 1"]
-      interval: 5s
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt https://localhost:9200 > /dev/null || exit 1",
+        ]
+      interval: 2s
       timeout: 2s
       retries: 60
 
@@ -76,8 +80,75 @@ services:
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_SYSTEM_PASSWORD:-changeme}
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'curl -s http://localhost:5601/api/status | grep \"available\"',
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 60
+
+  pmacho-filebeat-setup:
+    image: elastic/filebeat:9.2.3
+    depends_on:
+      pmacho-elasticsearch:
+        condition: service_healthy
+      pmacho-kibana:
+        condition: service_healthy
+    command: ["filebeat", "setup", "-e"]
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-changeme}
+    volumes:
+      - pmacho-elasticsearch-volume-certs:/usr/share/filebeat/certs:ro
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/logs:ro
+    restart: no
+
+  pmacho-filebeat:
+    image: elastic/filebeat:9.2.3
+    depends_on:
+      pmacho-elasticsearch:
+        condition: service_healthy
+    command: ["filebeat", "-e"]
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-changeme}
+    volumes:
+      - pmacho-elasticsearch-volume-certs:/usr/share/filebeat/certs:ro
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/logs:ro
+    restart: unless-stopped
+
+  pmacho-nginx:
+    image: nginx:stable
+    ports:
+      - 80:80
+    volumes:
+      - ./logs:/var/log/nginx
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:80 > /dev/null || exit 1"]
+      interval: 2s
+      timeout: 2s
+      retries: 60
+
+  pmacho-nginx-loggen:
+    image: curlimages/curl:latest
+    profiles: ["demo"]
+    depends_on:
+      pmacho-nginx:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          curl -s http://pmacho-nginx > /dev/null || true
+          sleep 1
+        done
+    restart: unless-stopped
 
 volumes:
   pmacho-elasticsearch-volume-data:
   pmacho-elasticsearch-volume-certs:
-
