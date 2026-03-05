@@ -3,4 +3,5 @@ services:
     image: mockserver/mockserver:5.15.0
     ports:
       - 1080:1080
+    restart: unless-stopped
 
