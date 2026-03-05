@@ -1,6 +1,6 @@
 services:
   pmacho-nginx:
-    image: nginx:stable
+    image: nginx:1
     ports:
       - 80:80
     volumes:
