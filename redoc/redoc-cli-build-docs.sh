@@ -1,3 +1,12 @@
 #!/usr/bin/env bash
-docker compose run --rm pmacho-redoc-cli-build-docs
+set -eu
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+docker_compose_file='docker-compose.yml'
+service='pmacho-redoc-cli-build-docs'
+
+docker compose \
+  --project-directory "$script_dir" \
+  -f "${script_dir}/${docker_compose_file}" \
+  run --rm "$service"
 
