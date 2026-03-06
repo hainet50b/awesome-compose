@@ -23,22 +23,17 @@ A personal collection of Docker Compose configurations for quick reference and r
 |---|---|---|
 | [elasticsearch](./elasticsearch/) | Elasticsearch + Kibana + Filebeat with TLS/security | 9200, 5601, 80 |
 | [elasticsearch-simple](./elasticsearch-simple/) | Elasticsearch + Kibana (minimal setup) | 9200, 5601 |
-| [seq](./seq/) | Structured log collection and visualization (Seq) | 80, 5341 |
 
 ### API Documentation
 
 | Directory | Description | Ports |
 |---|---|---|
 | [redoc](./redoc/) | OpenAPI documentation viewer and linter (ReDoc) | 80 |
-| [vacuum](./vacuum/) | OpenAPI linter and dashboard | - |
 
 ### Testing & Mocking
 
 | Directory | Description | Ports |
 |---|---|---|
-| [echo-server](./echo-server/) | Echo server for request inspection with Seq logging | 3000, 3010 |
-| [httpbin](./httpbin/) | HTTP request/response testing service | 80 |
-| [mock-server](./mock-server/) | MockServer for API mocking | 1080 |
 | [wiremock](./wiremock/) | WireMock HTTP stubbing | 8080 |
 
 ## Usage

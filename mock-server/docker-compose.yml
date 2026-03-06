@@ -1,7 +1,0 @@
-services:
-  pmacho-mock-server:
-    image: mockserver/mockserver:latest
-    ports:
-      - 1080:1080
-    restart: unless-stopped
-
