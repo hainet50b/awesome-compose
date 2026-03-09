@@ -3,6 +3,7 @@ services:
     image: mysql:9
     volumes:
       - pmacho-mysql-volume:/var/lib/mysql
+      - ./initdb.d:/docker-entrypoint-initdb.d:ro
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-pmacho_db}
@@ -33,4 +34,3 @@ services:
 
 volumes:
   pmacho-mysql-volume:
-
