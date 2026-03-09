@@ -7,9 +7,9 @@ HTTP stubbing server for API mocking.
 
 ## Ports
 
-| Port | Description |
-|---|---|
-| 8080 | WireMock HTTP endpoint |
+| Container | Host | Description |
+|---|---|---|
+| 8080 | 8080 | WireMock HTTP endpoint |
 
 ## Directory Structure
 

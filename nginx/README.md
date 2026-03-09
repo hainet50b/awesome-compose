@@ -7,9 +7,9 @@ Web server for serving static files.
 
 ## Ports
 
-| Port | Description |
-|---|---|
-| 80 | HTTP |
+| Container | Host | Description |
+|---|---|---|
+| 80 | 80 | Nginx HTTP endpoint |
 
 ## Directory Structure
 
